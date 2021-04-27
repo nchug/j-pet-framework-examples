@@ -20,6 +20,7 @@
 #include "../LargeBarrelAnalysis/TimeWindowCreator.h"
 
 #include "GeneralMonitoringPlotter.h"
+#include "ThreeHitAnalysis.h"
 
 #include <JPetManager/JPetManager.h>
 using namespace std;
@@ -34,6 +35,7 @@ int main(int argc, const char* argv[]) {
     manager.registerTask<HitFinder>("HitFinder");
     manager.registerTask<EventFinder>("EventFinder");
     manager.registerTask<GeneralMonitoringPlotter>("GeneralMonitoringPlotter");
+    manager.registerTask<ThreeHitAnalysis>("ThreeHitAnalysis");
 
     manager.useTask("TimeWindowCreator", "hld", "tslot.calib");
     manager.useTask("SignalFinder", "tslot.calib", "raw.sig");
@@ -41,6 +43,7 @@ int main(int argc, const char* argv[]) {
     manager.useTask("HitFinder", "phys.sig", "hits");
     manager.useTask("EventFinder", "hits", "unk.evt");
     manager.useTask("GeneralMonitoringPlotter", "unk.evt", "evt");
+    manager.useTask("ThreeHitAnalysis", "evt", "ops");
 
     manager.run(argc, argv);
   } catch (const std::exception& except) {

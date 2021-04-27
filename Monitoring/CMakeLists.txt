@@ -44,6 +44,8 @@ set(HEADERS ${use_modules_from}/TimeWindowCreator.h
             ${use_modules_from}/EventFinder.h
             ${use_modules_from}/EventCategorizerTools.h
             GeneralMonitoringPlotter.h
+	    ThreeHitAnalysis.h
+	    reconstructor.h
             )
 
 set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
@@ -60,6 +62,8 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
             ${use_modules_from}/EventFinder.cpp
             ${use_modules_from}/EventCategorizerTools.cpp
             GeneralMonitoringPlotter.cpp
+	    ThreeHitAnalysis.cpp
+	    reconstructor.cpp
             )
 
 add_executable(${projectBinary} ${SOURCES} ${HEADERS})
