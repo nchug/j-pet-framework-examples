@@ -158,6 +158,12 @@ bool TimeWindowCreator::exec() {
           tdcChannel, tombChannel, fTimeCalibration, fThresholds, fMaxTime,
           fMinTime, fSetTHRValuesFromChannels, getStatistics(),
           fSaveControlHistos);
+      
+      // Fill histograms of SigCh multiplicity per threshold number
+      for(auto& sigCh: allSigChs){
+	int thr = sigCh.getThresholdNumber();
+	getStatistics().fillHistogram(Form("ThresholdMultiplicity_%d_lead", thr), sigCh.getPM().getID());
+      }
 
       // Sort Signal Channels in time
       TimeWindowCreatorTools::sortByValue(allSigChs);
@@ -235,4 +241,11 @@ void TimeWindowCreator::initialiseHistograms() {
                                                     "THR Number", "Number of TT pairs");
   getStatistics().createHistogramWithAxes(new TH1D("TT_time_diff", "Time diff of TT pairs", 200, -750.0, 299250.0),
                                                     "Time Diff [ps]", "Number of TT pairs");
+
+  for(int thr = 1; thr <=4; ++thr){
+    getStatistics().createHistogramWithAxes(new TH1D(Form("ThresholdMultiplicity_%d_lead", thr), Form("Multiplicity on leading edge of threshold %d", thr), 400, 0, 400), "PMT ID", "Counts" );
+  }
+
+  
+  
 }
