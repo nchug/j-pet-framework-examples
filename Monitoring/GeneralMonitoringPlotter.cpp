@@ -16,6 +16,7 @@
 #include <JPetOptionsTools/JPetOptionsTools.h>
 #include <JPetWriter/JPetWriter.h>
 #include "../LargeBarrelAnalysis/EventCategorizerTools.h"
+#include "../LargeBarrelAnalysis/HitFinderTools.h"
 #include "GeneralMonitoringPlotter.h"
 #include <iostream>
 
@@ -70,6 +71,11 @@ void GeneralMonitoringPlotter::saveEvents(const vector<JPetEvent>& events)
 
 void GeneralMonitoringPlotter::initialiseHistograms(){
 
+  getStatistics().createHistogramWithAxes(new TH1D("hitCount_vs_ID", "HitCounts_vs_ID", 200, -0.5, 199.5), "Scin_ID", "Number of hits");
+  getStatistics().createHistogramWithAxes(new TH1D("TOT_singleHit", "TOT of all hits", 340, -10.5, 159.5), "TOT [ns] ", "Counts");
+  getStatistics().createHistogramWithAxes(new TH2D("TOT_vs_ID", "TOT of all hits vs Scin ID",  200, -0.5, 199.5, 340, -10.5, 159.5), "Scin_ID","TOT [ns]");
+  getStatistics().createHistogramWithAxes(new TH2D("XY_plane_singleHit", "XY plane of scintillators", 400, -100, 100, 400, -100, 100), "Y axis", "X axis");
+
   // General histograms
   // getStatistics().createHistogramWithAxes(
   //   new TH2D("All_XYpos", "Hit position XY", 240, -60.25, 59.75, 240, -60.25, 59.75),
@@ -81,8 +87,18 @@ void GeneralMonitoringPlotter::initialiseHistograms(){
 
 void GeneralMonitoringPlotter::analyzeSingleHits(const std::vector<JPetHit>& hits) {
 
-  // "HitCounts_vs_ID"
-  // "TOTvsID"
-  // "TOT"
-  
+   if (hits.size() > 0 ) {
+     
+     for (int j = 0; j < hits.size(); j++){
+
+       JPetHit singleHit = hits.at(j);
+       double tot = HitFinderTools::calculateTOT(singleHit, HitFinderTools::TOTCalculationType::kThresholdTrapeze)/1000;
+       
+       getStatistics().fillHistogram("hitCount_vs_ID", singleHit.getScintillator().getID());
+       getStatistics().fillHistogram( "TOT_singleHit", tot );
+       getStatistics().fillHistogram( "TOT_vs_ID",  singleHit.getScintillator().getID(), tot );
+       getStatistics().fillHistogram( "XY_plane_singleHit", singleHit.getPosY(), singleHit.getPosX() );
+     }
+  }
+   
 }
